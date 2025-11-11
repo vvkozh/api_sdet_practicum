@@ -19,7 +19,7 @@ jobs:
 
     - name: Build and start services
       run: |
-        docker-compose up -d --build
+        docker-compose up
 
     - name: Wait for services to be ready
       run: |
