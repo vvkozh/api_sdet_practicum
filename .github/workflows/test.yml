@@ -1,0 +1,47 @@
+name: Run Automated Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and start services
+      run: |
+        docker-compose up -d --build
+
+    - name: Wait for services to be ready
+      run: |
+        timeout 120s bash -c '
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests in parallel
+      run: |
+        pytest -n auto --alluredir=allure-results
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v5
+      with:
+        name: test-results
+        path: |
+          allure-results/
