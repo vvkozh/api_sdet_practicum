@@ -28,7 +28,7 @@ def delete_entity() -> Generator[Callable[[int], int], None, None]:
     def save_entity_id(entity_id: int) -> int:
         """Сохраняет ID сущности для последующего удаления."""
         nonlocal entity_id_in_test
-        entity_id_in_test: int = entity_id
+        entity_id_in_test = entity_id
         return entity_id_in_test
     yield save_entity_id
     if entity_id_in_test is not None:
