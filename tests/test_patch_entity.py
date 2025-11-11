@@ -1,5 +1,6 @@
 import allure
 import pytest
+from typing import Any, Dict
 
 from helpers.api_requests import get_request, patch_request
 from helpers.generators import generate_random_int, generate_random_sense, generate_random_list_int
@@ -12,6 +13,8 @@ class TestPatchEntity:
                               ('additional_number', 'additional_info', generate_random_int)])
     def test_patch_addition(self, create_and_delete_entity, modified_param, not_modified_param, generate_method):
         with allure.step('Подготовка к тесту'):
+            payload: Dict[str, Any]
+            entity_id: int
             payload, entity_id = create_and_delete_entity
 
         with allure.step(f'Меняем {modified_param}'):
@@ -21,19 +24,21 @@ class TestPatchEntity:
             response = patch_request(entity_id, payload)
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == 204
+            assert response.status_code == 204, f"Ожидался статус 204, получен {response.status_code}"
 
         with allure.step(f'Проверка, что изменился {modified_param}'):
             response_patch_entity = get_request(entity_id)
-            response_data = response_patch_entity.json()
+            response_data: Dict[str, Any] = response_patch_entity.json()
             response_data['addition'].pop('id')
             response_data.pop('id')
-            assert response_data == payload
+            assert response_data == payload,  "Структура сущности не соответствует ожидаемой после обновления"
 
 
     @allure.title('Тест изменения important_numbers')
     def test_patch_important_numbers(self, create_and_delete_entity):
         with allure.step('Подготовка к тесту'):
+            payload: Dict[str, Any]
+            entity_id: int
             payload, entity_id = create_and_delete_entity
 
         with allure.step('Меняем important_numbers'):
@@ -43,19 +48,21 @@ class TestPatchEntity:
             response = patch_request(entity_id, payload)
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == 204
+            assert response.status_code == 204, f"Ожидался статус 204, получен {response.status_code}"
 
         with allure.step(f'Проверка изменения important_numbers'):
             response_patch_entity = get_request(entity_id)
-            response_data = response_patch_entity.json()
+            response_data: Dict[str, Any] = response_patch_entity.json()
             response_data['addition'].pop('id')
             response_data.pop('id')
-            assert response_data == payload
+            assert response_data == payload, "Структура сущности не соответствует ожидаемой после обновления"
 
 
     @allure.title('Тест изменения title')
     def test_patch_title(self, create_and_delete_entity):
         with allure.step('Подготовка к тесту'):
+            payload: Dict[str, Any]
+            entity_id: int
             payload, entity_id = create_and_delete_entity
 
         with allure.step('Меняем title'):
@@ -65,19 +72,22 @@ class TestPatchEntity:
             response = patch_request(entity_id, payload)
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == 204
+            assert response.status_code == 204, f"Ожидался статус 204, получен {response.status_code}"
 
         with allure.step(f'Проверка изменения title'):
             response_patch_entity = get_request(entity_id)
-            response_data = response_patch_entity.json()
+            response_data: Dict[str, Any] = response_patch_entity.json()
             response_data['addition'].pop('id')
             response_data.pop('id')
-            assert response_data == payload
+            assert response_data == payload, "Структура сущности не соответствует ожидаемой после обновления"
 
     @allure.title('Тест изменения verified')
     def test_patch_verified(self, create_and_delete_entity):
         with allure.step('Подготовка к тесту'):
+            payload: Dict[str, Any]
+            entity_id: int
             payload, entity_id = create_and_delete_entity
+
         with allure.step(f'Меняем verified'):
             if payload['verified'] is True:
                 payload['verified'] = False
@@ -88,11 +98,11 @@ class TestPatchEntity:
             response = patch_request(entity_id, payload)
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == 204
+            assert response.status_code == 204, f"Ожидался статус 204, получен {response.status_code}"
 
         with allure.step(f'Проверка изменения verified'):
             response_patch_entity = get_request(entity_id)
-            response_data = response_patch_entity.json()
+            response_data: Dict[str, Any] = response_patch_entity.json()
             response_data['addition'].pop('id')
             response_data.pop('id')
-            assert response_data == payload
+            assert response_data == payload, "Структура сущности не соответствует ожидаемой после обновления"
